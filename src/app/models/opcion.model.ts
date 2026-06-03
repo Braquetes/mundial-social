@@ -1,4 +1,4 @@
-export type OpcionValue = 'panini' | 'messi' | 'cristiano' | 'mbappe';
+export type OpcionValue = 'panini' | 'messi' | 'cristiano' | 'mbappe' | 'neymar' | 'ochoa';
 
 export interface Opcion {
   id: number;          // 1=panini, 2=messi, 3=cristiano, 4=mbappe
@@ -42,4 +42,20 @@ export const OPCIONES: Opcion[] = [
     emoji: '⚡',
     image: 'mbappe.png',
   },
+  {
+    id: 5,
+    value: 'neymar',
+    label: 'Foto con Neymar',
+    sublabel: 'Sube el nivel con la magia brasileña',
+    emoji: '🤴',
+    image: 'neymar.png',
+  },
+  {
+    id: 6,
+    value: 'ochoa',
+    label: 'Foto con Ochoa',
+    sublabel: 'Únete al héroe mexicano',
+    emoji: '🧤',
+    image: 'ochoa.png',
+  }
 ];
