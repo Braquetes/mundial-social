@@ -4,21 +4,13 @@
   <!-- Selector de cámara -->
   @if (camaras().length > 0) {
   <div class="camara__selector">
-    <select [value]="camaraSeleccionada()" (change)="onCamaraChange($event)">
-      <option *ngFor="let cam of camaras(); let i = index" [value]="cam.deviceId">
-        [{{ i }}] {{ cam.label || 'Cámara sin nombre' }}
-        {{ cam.label.includes('front') ? '(Frontal)' :
-        cam.label.includes('back') ? '(Trasera)' : '' }}
-      </option>
+    <select [ngModel]="camaraSeleccionada()" (ngModelChange)="cambiarCamara($event)">
+      @for (cam of camaras(); track cam.deviceId) {
+      <option [value]="cam.deviceId">{{ cam.label || 'Cámara ' + $index }}</option>
+      }
     </select>
   </div>
   }
-  <!-- Info visible en iPad -->
-  <div
-    style="position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 8px; z-index: 9999; font-size: 12px;">
-    📷 Cámara:
-    <span id="camaraNombre">Cargando...</span>
-  </div>
   <!-- Video feed -->
   <div class="camara__visor">
     <video #videoEl class="camara__video" autoplay playsinline muted></video>

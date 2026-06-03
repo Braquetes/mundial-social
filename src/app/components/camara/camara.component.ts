@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FotoIaService } from '../../services/foto-ia.service';
 
@@ -17,7 +17,7 @@ type CamaraEstado = 'iniciando' | 'lista' | 'contando' | 'capturando' | 'error';
 @Component({
   selector: 'app-camara',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgFor],
+  imports: [CommonModule, FormsModule],
   templateUrl: './camara.component.html',
   styleUrls: ['./camara.component.scss'],
 })
@@ -41,15 +41,6 @@ export class CamaraComponent implements OnInit, OnDestroy {
       return;
     }
     await this.detectarCamaras();
-    // Intentar nuevamente después de que todo cargue
-    setTimeout(() => {
-      const camaras = this.camaras();
-      if (camaras[2] && this.camaraSeleccionada() !== camaras[2].deviceId) {
-        console.log('🔄 Reintentando cambiar a cámara [2]');
-        this.camaraSeleccionada.set(camaras[2].deviceId);
-        this.iniciarCamara(camaras[2].deviceId);
-      }
-    }, 500);
   }
 
   ngOnDestroy(): void {
@@ -58,7 +49,6 @@ export class CamaraComponent implements OnInit, OnDestroy {
 
   private async detectarCamaras(): Promise<void> {
     try {
-      // Pedir permiso primero para que aparezcan los labels
       const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
       tempStream.getTracks().forEach(t => t.stop());
 
@@ -70,24 +60,31 @@ export class CamaraComponent implements OnInit, OnDestroy {
 
       this.camaras.set(camaras);
 
-      // 🔥 Seleccionar el índice [2] que es la frontal normal
-      const camaraPorDefecto = camaras[2];
+      // 🔥 CAMBIO: Buscar cámara frontal
+      const frontal = camaras.find(c =>
+        c.label.toLowerCase().includes('front') ||
+        c.label.toLowerCase().includes('face')
+      );
 
-      console.log('✅ Usando cámara frontal normal (índice 2):', camaraPorDefecto.label);
-      this.camaraSeleccionada.set(camaraPorDefecto.deviceId);
-      await this.iniciarCamara(camaraPorDefecto.deviceId);
-
+      if (frontal) {
+        console.log('✅ Usando cámara frontal:', frontal.label);
+        this.camaraSeleccionada.set(frontal.deviceId);
+        await this.iniciarCamara(frontal.deviceId);
+      } else {
+        // Fallback: usar la última cámara
+        const ultimaCamara = camaras[camaras.length - 1];
+        if (ultimaCamara) {
+          console.log('⚠️ No se encontró frontal, usando última cámara:', ultimaCamara.label);
+          this.camaraSeleccionada.set(ultimaCamara.deviceId);
+          await this.iniciarCamara(ultimaCamara.deviceId);
+        } else {
+          await this.iniciarCamara(null);
+        }
+      }
     } catch {
       this.estado.set('error');
       this.errorMsg.set('No se pudo acceder a la cámara. Verifica los permisos.');
     }
-  }
-
-  async onCamaraChange(event: Event) {
-    const select = event.target as HTMLSelectElement;
-    const deviceId = select.value;
-    this.camaraSeleccionada.set(deviceId);
-    await this.iniciarCamara(deviceId);
   }
 
   async cambiarCamara(deviceId: string): Promise<void> {
@@ -107,22 +104,6 @@ export class CamaraComponent implements OnInit, OnDestroy {
       const video = this.videoRef.nativeElement;
       video.srcObject = this.stream;
       await video.play();
-
-      // Mostrar qué cámara está activa
-      const videoTrack = this.stream.getVideoTracks()[0];
-      const nombreCamara = videoTrack.label;
-
-      // Actualizar el span visible
-      const spanCamara = document.getElementById('camaraNombre');
-      if (spanCamara) {
-        spanCamara.textContent = nombreCamara || 'Desconocida';
-      }
-
-      // También puedes mostrar en un alert o console.log visual
-      console.log = (msg) => {
-        // Esto no sirve en iPad, mejor mostrar visualmente
-      };
-
       this.estado.set('lista');
     } catch {
       this.estado.set('error');
