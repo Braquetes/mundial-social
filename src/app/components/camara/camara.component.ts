@@ -61,12 +61,16 @@ export class CamaraComponent implements OnInit, OnDestroy {
 
       this.camaras.set(camaras);
 
-      // 🔥 CAMBIO AQUÍ: Usar la última cámara (frontal en iPad) en lugar de la trasera
-      const camaraPorDefecto = camaras[camaras.length - 1]; // Última cámara
+      // 🔥 Seleccionar la cámara en posición [2] (la tercera)
+      const camaraPorDefecto = camaras[2]; // Índice 2 = tercera cámara
 
       if (camaraPorDefecto) {
         this.camaraSeleccionada.set(camaraPorDefecto.deviceId);
         await this.iniciarCamara(camaraPorDefecto.deviceId);
+      } else if (camaras[0]) {
+        // Fallback a la primera si no existe la [2]
+        this.camaraSeleccionada.set(camaras[0].deviceId);
+        await this.iniciarCamara(camaras[0].deviceId);
       } else {
         await this.iniciarCamara(null);
       }
