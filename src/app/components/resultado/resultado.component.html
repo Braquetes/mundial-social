@@ -1,0 +1,26 @@
+<section class="resultado">
+
+  @if (esPanini()) {
+  <div class="card-wrap">
+    <div class="card-container" #cardRef>
+      <img class="card-bg" src="panini.jpeg" alt="Panini background" />
+      <div class="card-fallback"></div>
+      <img class="card-player-img" [src]="imagenUrl()" alt="Foto jugador" />
+      <div class="overlay-name">{{ nombre().toUpperCase() }}</div>
+      <div class="overlay-dob">Mundial Social del DIF Oaxaca</div>
+    </div>
+
+    <button class="btn-imprimir" (click)="descargar()">🖨️ Descargar Tarjeta</button>
+  </div>
+
+  } @else {
+  <div class="resultado__content">
+    <div class="resultado__imagen-wrap">
+      <img [src]="imagenUrl()" alt="Foto con IA" class="resultado__imagen" />
+    </div>
+    <button class="btn-imprimir" (click)="descargar()">⬇️ Descargar imagen</button>
+    <button class="btn-secundario" (click)="nueva()">📸 Crear otra foto</button>
+  </div>
+  }
+
+</section>

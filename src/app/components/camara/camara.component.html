@@ -1,0 +1,65 @@
+<section class="camara">
+  <!-- Flash overlay -->
+  <div class="camara__flash" [class.camara__flash--activo]="flashActivo()"></div>
+
+  <!-- Video feed -->
+  <div class="camara__visor">
+    <video
+      #videoEl
+      class="camara__video"
+      autoplay
+      playsinline
+      muted
+    ></video>
+
+    <!-- Countdown overlay -->
+    @if (estado() === 'contando') {
+      <div class="camara__countdown">
+        <span class="camara__cuenta" [attr.data-num]="cuenta()">{{ cuenta() }}</span>
+      </div>
+    }
+
+    <!-- Corner guides -->
+    <div class="camara__guide camara__guide--tl"></div>
+    <div class="camara__guide camara__guide--tr"></div>
+    <div class="camara__guide camara__guide--bl"></div>
+    <div class="camara__guide camara__guide--br"></div>
+  </div>
+
+  <!-- Error state -->
+  @if (estado() === 'error') {
+    <div class="camara__error">
+      <span class="camara__error-icon">📵</span>
+      <p>{{ errorMsg() }}</p>
+    </div>
+  }
+
+  <!-- Controls -->
+  <div class="camara__controls">
+    <button
+      class="camara__btn-volver"
+      (click)="volver()"
+      [disabled]="estado() === 'contando' || estado() === 'capturando'"
+    >
+      ←
+    </button>
+
+    <button
+      class="camara__btn-captura"
+      (click)="tomarFoto()"
+      [disabled]="estado() !== 'lista'"
+      [class.camara__btn-captura--activo]="estado() === 'lista'"
+      aria-label="Tomar foto"
+    >
+      <span class="camara__btn-captura-inner"></span>
+    </button>
+
+    <!-- Spacer to center capture button -->
+    <div style="width: 52px;"></div>
+  </div>
+
+  <!-- Hint -->
+  @if (estado() === 'lista') {
+    <p class="camara__hint">Presiona el botón para iniciar el temporizador de 3 segundos</p>
+  }
+</section>

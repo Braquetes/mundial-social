@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+/* ─── Google Fonts ─────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+/* ─── CSS Variables ─────────────────────────────────── */
+:root {
+  --font-display: 'Bebas Neue', 'Arial Black', sans-serif;
+  --font-body:    'Nunito', system-ui, sans-serif;
+
+  --color-bg:           #f0f4f8;
+  --color-surface:      #ffffff;
+  --color-border:       #e2e8f0;
+  --color-text:         #1a2c3e;
+  --color-muted:        #64748b;
+  --color-primary:      #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-accent:       #06b6d4;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+}

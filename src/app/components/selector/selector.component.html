@@ -1,0 +1,23 @@
+<section class="selector">
+  <!-- <div class="selector__header">
+    <h1 class="selector__title">¿Qué quieres crear hoy?</h1>
+    <p class="selector__subtitle">Elige tu efecto con IA</p>
+  </div> -->
+
+  <div class="selector__grid">
+    @for (opcion of opciones; track opcion.id) {
+    <button class="opcion-card" (click)="seleccionar(opcion)" [attr.data-value]="opcion.value">
+      <div class="opcion-card__bg">
+        <img [src]="opcion.image" [alt]="opcion.label" class="opcion-card__img" />
+        <div class="opcion-card__overlay"></div>
+      </div>
+      <div class="opcion-card__content">
+        <span class="opcion-card__emoji">{{ opcion.emoji }}</span>
+        <h2 class="opcion-card__label">{{ opcion.label }}</h2>
+        <p class="opcion-card__sublabel">{{ opcion.sublabel }}</p>
+      </div>
+      <div class="opcion-card__shine"></div>
+    </button>
+    }
+  </div>
+</section>
