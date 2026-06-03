@@ -25,6 +25,11 @@
   </div>
   }
 
-
+  @if (qrUrl()) {
+  <div class="qr-wrap">
+    <p class="qr-texto">📲 Escanea para ver tu foto</p>
+    <img [src]="qrUrl()" alt="QR" class="qr-img" />
+  </div>
+  }
 
 </section>
