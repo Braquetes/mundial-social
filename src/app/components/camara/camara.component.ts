@@ -61,19 +61,13 @@ export class CamaraComponent implements OnInit, OnDestroy {
 
       this.camaras.set(camaras);
 
-      // 🔥 Seleccionar la cámara en posición [2] (la tercera)
-      const camaraPorDefecto = camaras[2]; // Índice 2 = tercera cámara
+      // 🔥 Seleccionar el índice [2] que es la frontal normal
+      const camaraPorDefecto = camaras[2];
 
-      if (camaraPorDefecto) {
-        this.camaraSeleccionada.set(camaraPorDefecto.deviceId);
-        await this.iniciarCamara(camaraPorDefecto.deviceId);
-      } else if (camaras[0]) {
-        // Fallback a la primera si no existe la [2]
-        this.camaraSeleccionada.set(camaras[0].deviceId);
-        await this.iniciarCamara(camaras[0].deviceId);
-      } else {
-        await this.iniciarCamara(null);
-      }
+      console.log('✅ Usando cámara frontal normal (índice 2):', camaraPorDefecto.label);
+      this.camaraSeleccionada.set(camaraPorDefecto.deviceId);
+      await this.iniciarCamara(camaraPorDefecto.deviceId);
+
     } catch {
       this.estado.set('error');
       this.errorMsg.set('No se pudo acceder a la cámara. Verifica los permisos.');
