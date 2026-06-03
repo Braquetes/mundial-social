@@ -6,42 +6,23 @@
 
     <div class="nombre-form__field">
       <label for="nombre" class="nombre-form__label">Nombre completo</label>
-      <input
-        id="nombre"
-        type="text"
-        class="nombre-form__input"
-        [(ngModel)]="nombre"
-        [class.nombre-form__input--error]="error"
-        placeholder="Ej: Juan Pérez"
-        maxlength="20"
-        autocomplete="off"
-        (keyup.enter)="continuar()"
-      />
+      <input id="nombre" type="text" class="nombre-form__input" [(ngModel)]="nombre"
+        [class.nombre-form__input--error]="error" maxlength="20" autocomplete="off" (keyup.enter)="continuar()" />
       <div class="nombre-form__meta">
         @if (error) {
-          <span class="nombre-form__error">{{ error }}</span>
+        <span class="nombre-form__error">{{ error }}</span>
         }
-        <span
-          class="nombre-form__counter"
-          [class.nombre-form__counter--warn]="caractereRestantes <= 4"
-        >
+        <span class="nombre-form__counter" [class.nombre-form__counter--warn]="caractereRestantes <= 4">
           {{ caractereRestantes }}
         </span>
       </div>
     </div>
 
-    <button
-      class="nombre-form__btn nombre-form__btn--primary"
-      (click)="continuar()"
-      [disabled]="!nombreValido"
-    >
+    <button class="nombre-form__btn nombre-form__btn--primary" (click)="continuar()" [disabled]="!nombreValido">
       Continuar →
     </button>
 
-    <button
-      class="nombre-form__btn nombre-form__btn--secondary"
-      (click)="volver()"
-    >
+    <button class="nombre-form__btn nombre-form__btn--secondary" (click)="volver()">
       ← Volver
     </button>
   </div>

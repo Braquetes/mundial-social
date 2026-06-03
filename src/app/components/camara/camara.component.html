@@ -1,22 +1,25 @@
 <section class="camara">
   <!-- Flash overlay -->
   <div class="camara__flash" [class.camara__flash--activo]="flashActivo()"></div>
-
+  <!-- Selector de cámara -->
+  @if (camaras().length > 1) {
+  <div class="camara__selector">
+    <select [ngModel]="camaraSeleccionada()" (ngModelChange)="cambiarCamara($event)">
+      @for (cam of camaras(); track cam.deviceId) {
+      <option [value]="cam.deviceId">{{ cam.label || 'Cámara ' + $index }}</option>
+      }
+    </select>
+  </div>
+  }
   <!-- Video feed -->
   <div class="camara__visor">
-    <video
-      #videoEl
-      class="camara__video"
-      autoplay
-      playsinline
-      muted
-    ></video>
+    <video #videoEl class="camara__video" autoplay playsinline muted></video>
 
     <!-- Countdown overlay -->
     @if (estado() === 'contando') {
-      <div class="camara__countdown">
-        <span class="camara__cuenta" [attr.data-num]="cuenta()">{{ cuenta() }}</span>
-      </div>
+    <div class="camara__countdown">
+      <span class="camara__cuenta" [attr.data-num]="cuenta()">{{ cuenta() }}</span>
+    </div>
     }
 
     <!-- Corner guides -->
@@ -28,29 +31,21 @@
 
   <!-- Error state -->
   @if (estado() === 'error') {
-    <div class="camara__error">
-      <span class="camara__error-icon">📵</span>
-      <p>{{ errorMsg() }}</p>
-    </div>
+  <div class="camara__error">
+    <span class="camara__error-icon">📵</span>
+    <p>{{ errorMsg() }}</p>
+  </div>
   }
 
   <!-- Controls -->
   <div class="camara__controls">
-    <button
-      class="camara__btn-volver"
-      (click)="volver()"
-      [disabled]="estado() === 'contando' || estado() === 'capturando'"
-    >
+    <button class="camara__btn-volver" (click)="volver()"
+      [disabled]="estado() === 'contando' || estado() === 'capturando'">
       ←
     </button>
 
-    <button
-      class="camara__btn-captura"
-      (click)="tomarFoto()"
-      [disabled]="estado() !== 'lista'"
-      [class.camara__btn-captura--activo]="estado() === 'lista'"
-      aria-label="Tomar foto"
-    >
+    <button class="camara__btn-captura" (click)="tomarFoto()" [disabled]="estado() !== 'lista'"
+      [class.camara__btn-captura--activo]="estado() === 'lista'" aria-label="Tomar foto">
       <span class="camara__btn-captura-inner"></span>
     </button>
 
@@ -60,6 +55,6 @@
 
   <!-- Hint -->
   @if (estado() === 'lista') {
-    <p class="camara__hint">Presiona el botón para iniciar el temporizador de 3 segundos</p>
+  <p class="camara__hint">Presiona el botón para iniciar el temporizador de 3 segundos</p>
   }
 </section>

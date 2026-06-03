@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: calc(100vh - 64px);
+  height: calc(100vh - 64px); // ← fijo, no min-height
   background: #000;
   overflow: hidden;
 
@@ -22,12 +22,30 @@
     }
   }
 
+  &__selector {
+    width: 100%;
+    background: #111;
+    padding: 8px 16px;
+
+    select {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+  }
+
   // Video + frame
   &__visor {
     position: relative;
     width: 100%;
     flex: 1;
     overflow: hidden;
+    max-height: calc(90vh - 64px - 120px); // ← 120px es lo que ocupan los controles
   }
 
   &__video {
@@ -46,10 +64,37 @@
     border-style: solid;
     border-width: 0;
 
-    &--tl { top: 20px; left: 20px; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 4px; }
-    &--tr { top: 20px; right: 20px; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 4px; }
-    &--bl { bottom: 20px; left: 20px; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 4px; }
-    &--br { bottom: 20px; right: 20px; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 4px; }
+    &--tl {
+      top: 20px;
+      left: 20px;
+      border-top-width: 3px;
+      border-left-width: 3px;
+      border-top-left-radius: 4px;
+    }
+
+    &--tr {
+      top: 20px;
+      right: 20px;
+      border-top-width: 3px;
+      border-right-width: 3px;
+      border-top-right-radius: 4px;
+    }
+
+    &--bl {
+      bottom: 20px;
+      left: 20px;
+      border-bottom-width: 3px;
+      border-left-width: 3px;
+      border-bottom-left-radius: 4px;
+    }
+
+    &--br {
+      bottom: 20px;
+      right: 20px;
+      border-bottom-width: 3px;
+      border-right-width: 3px;
+      border-bottom-right-radius: 4px;
+    }
   }
 
   // Countdown overlay
@@ -197,7 +242,18 @@
 }
 
 @keyframes pulseCuenta {
-  0%   { transform: scale(1);    opacity: 1; }
-  50%  { transform: scale(1.08); opacity: 0.85; }
-  100% { transform: scale(1);    opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

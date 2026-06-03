@@ -16,7 +16,7 @@ export const OPCIONES: Opcion[] = [
     label: 'Carta Panini',
     sublabel: 'Tu tarjeta coleccionable',
     emoji: '🃏',
-    image: 'panini.jpeg',
+    image: 'panini.png',
   },
   {
     id: 2,
