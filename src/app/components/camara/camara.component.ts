@@ -41,6 +41,15 @@ export class CamaraComponent implements OnInit, OnDestroy {
       return;
     }
     await this.detectarCamaras();
+    // Intentar nuevamente después de que todo cargue
+    setTimeout(() => {
+      const camaras = this.camaras();
+      if (camaras[2] && this.camaraSeleccionada() !== camaras[2].deviceId) {
+        console.log('🔄 Reintentando cambiar a cámara [2]');
+        this.camaraSeleccionada.set(camaras[2].deviceId);
+        this.iniciarCamara(camaras[2].deviceId);
+      }
+    }, 500);
   }
 
   ngOnDestroy(): void {

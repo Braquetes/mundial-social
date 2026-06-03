@@ -2,7 +2,7 @@
   <!-- Flash overlay -->
   <div class="camara__flash" [class.camara__flash--activo]="flashActivo()"></div>
   <!-- Selector de cámara -->
-  <!-- @if (camaras().length > 0) {
+  @if (camaras().length > 0) {
   <div class="camara__selector">
     <select [value]="camaraSeleccionada()" (change)="onCamaraChange($event)">
       <option *ngFor="let cam of camaras(); let i = index" [value]="cam.deviceId">
@@ -12,7 +12,7 @@
       </option>
     </select>
   </div>
-  } -->
+  }
   <!-- Video feed -->
   <div class="camara__visor">
     <video #videoEl class="camara__video" autoplay playsinline muted></video>
