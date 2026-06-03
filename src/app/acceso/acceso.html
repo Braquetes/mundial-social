@@ -1,0 +1,18 @@
+<section class="acceso">
+  <div class="acceso__card">
+    <div class="acceso__icon">🔐</div>
+    <h1 class="acceso__title">Acceso requerido</h1>
+    <p class="acceso__desc">Ingresa el código para continuar</p>
+
+    <input class="acceso__input" [class.acceso__input--error]="error()" type="password" [(ngModel)]="codigo"
+      placeholder="••••••" maxlength="10" (keyup.enter)="verificar()" />
+
+    @if (error()) {
+    <p class="acceso__error">Código incorrecto</p>
+    }
+
+    <button class="acceso__btn" (click)="verificar()">
+      Entrar →
+    </button>
+  </div>
+</section>
