@@ -107,6 +107,22 @@ export class CamaraComponent implements OnInit, OnDestroy {
       const video = this.videoRef.nativeElement;
       video.srcObject = this.stream;
       await video.play();
+
+      // Mostrar qué cámara está activa
+      const videoTrack = this.stream.getVideoTracks()[0];
+      const nombreCamara = videoTrack.label;
+
+      // Actualizar el span visible
+      const spanCamara = document.getElementById('camaraNombre');
+      if (spanCamara) {
+        spanCamara.textContent = nombreCamara || 'Desconocida';
+      }
+
+      // También puedes mostrar en un alert o console.log visual
+      console.log = (msg) => {
+        // Esto no sirve en iPad, mejor mostrar visualmente
+      };
+
       this.estado.set('lista');
     } catch {
       this.estado.set('error');
