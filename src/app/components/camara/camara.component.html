@@ -2,12 +2,14 @@
   <!-- Flash overlay -->
   <div class="camara__flash" [class.camara__flash--activo]="flashActivo()"></div>
   <!-- Selector de cámara -->
-  @if (camaras().length > 1) {
+  @if (camaras().length > 0) {
   <div class="camara__selector">
-    <select [ngModel]="camaraSeleccionada()" (ngModelChange)="cambiarCamara($event)">
-      @for (cam of camaras(); track cam.deviceId) {
-      <option [value]="cam.deviceId">{{ cam.label || 'Cámara ' + $index }}</option>
-      }
+    <select [value]="camaraSeleccionada()" (change)="onCamaraChange($event)">
+      <option *ngFor="let cam of camaras(); let i = index" [value]="cam.deviceId">
+        [{{ i }}] {{ cam.label || 'Cámara sin nombre' }}
+        {{ cam.label.includes('front') ? '(Frontal)' :
+        cam.label.includes('back') ? '(Trasera)' : '' }}
+      </option>
     </select>
   </div>
   }

@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FotoIaService } from '../../services/foto-ia.service';
 
@@ -17,7 +17,7 @@ type CamaraEstado = 'iniciando' | 'lista' | 'contando' | 'capturando' | 'error';
 @Component({
   selector: 'app-camara',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgFor],
   templateUrl: './camara.component.html',
   styleUrls: ['./camara.component.scss'],
 })
@@ -49,6 +49,7 @@ export class CamaraComponent implements OnInit, OnDestroy {
 
   private async detectarCamaras(): Promise<void> {
     try {
+      // Pedir permiso primero para que aparezcan los labels
       const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
       tempStream.getTracks().forEach(t => t.stop());
 
@@ -60,31 +61,26 @@ export class CamaraComponent implements OnInit, OnDestroy {
 
       this.camaras.set(camaras);
 
-      // 🔥 CAMBIO: Buscar cámara frontal
-      const frontal = camaras.find(c =>
-        c.label.toLowerCase().includes('front') ||
-        c.label.toLowerCase().includes('face')
-      );
+      // 🔥 CAMBIO AQUÍ: Usar la última cámara (frontal en iPad) en lugar de la trasera
+      const camaraPorDefecto = camaras[camaras.length - 1]; // Última cámara
 
-      if (frontal) {
-        console.log('✅ Usando cámara frontal:', frontal.label);
-        this.camaraSeleccionada.set(frontal.deviceId);
-        await this.iniciarCamara(frontal.deviceId);
+      if (camaraPorDefecto) {
+        this.camaraSeleccionada.set(camaraPorDefecto.deviceId);
+        await this.iniciarCamara(camaraPorDefecto.deviceId);
       } else {
-        // Fallback: usar la última cámara
-        const ultimaCamara = camaras[camaras.length - 1];
-        if (ultimaCamara) {
-          console.log('⚠️ No se encontró frontal, usando última cámara:', ultimaCamara.label);
-          this.camaraSeleccionada.set(ultimaCamara.deviceId);
-          await this.iniciarCamara(ultimaCamara.deviceId);
-        } else {
-          await this.iniciarCamara(null);
-        }
+        await this.iniciarCamara(null);
       }
     } catch {
       this.estado.set('error');
       this.errorMsg.set('No se pudo acceder a la cámara. Verifica los permisos.');
     }
+  }
+
+  async onCamaraChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    const deviceId = select.value;
+    this.camaraSeleccionada.set(deviceId);
+    await this.iniciarCamara(deviceId);
   }
 
   async cambiarCamara(deviceId: string): Promise<void> {
