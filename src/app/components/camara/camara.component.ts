@@ -49,7 +49,6 @@ export class CamaraComponent implements OnInit, OnDestroy {
 
   private async detectarCamaras(): Promise<void> {
     try {
-      // Pedir permiso primero para que aparezcan los labels
       const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
       tempStream.getTracks().forEach(t => t.stop());
 
@@ -61,16 +60,26 @@ export class CamaraComponent implements OnInit, OnDestroy {
 
       this.camaras.set(camaras);
 
-      // Preferir cámara trasera si existe
-      const trasera = camaras.find(c => c.label.toLowerCase().includes('back'))
-        ?? camaras.find(c => c.label.toLowerCase().includes('rear'))
-        ?? camaras[0];
+      // 🔥 CAMBIO: Buscar cámara frontal
+      const frontal = camaras.find(c =>
+        c.label.toLowerCase().includes('front') ||
+        c.label.toLowerCase().includes('face')
+      );
 
-      if (trasera) {
-        this.camaraSeleccionada.set(trasera.deviceId);
-        await this.iniciarCamara(trasera.deviceId);
+      if (frontal) {
+        console.log('✅ Usando cámara frontal:', frontal.label);
+        this.camaraSeleccionada.set(frontal.deviceId);
+        await this.iniciarCamara(frontal.deviceId);
       } else {
-        await this.iniciarCamara(null);
+        // Fallback: usar la última cámara
+        const ultimaCamara = camaras[camaras.length - 1];
+        if (ultimaCamara) {
+          console.log('⚠️ No se encontró frontal, usando última cámara:', ultimaCamara.label);
+          this.camaraSeleccionada.set(ultimaCamara.deviceId);
+          await this.iniciarCamara(ultimaCamara.deviceId);
+        } else {
+          await this.iniciarCamara(null);
+        }
       }
     } catch {
       this.estado.set('error');
