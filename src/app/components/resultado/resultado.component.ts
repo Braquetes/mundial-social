@@ -107,6 +107,7 @@ export class ResultadoComponent implements OnInit {
       return;
     }
 
+    const ventana = window.open();
     await this.esperar(200);
 
     try {
@@ -138,7 +139,6 @@ export class ResultadoComponent implements OnInit {
       await this.subirYGenerarQr(canvas);
 
       // Abrir la imagen en una nueva ventana (sin imprimir)
-      const ventana = window.open();
       if (ventana) {
         ventana.document.write(`
           <html>
@@ -182,9 +182,6 @@ export class ResultadoComponent implements OnInit {
         `);
         ventana.document.close();
       }
-
-      alert('✅ Imagen capturada y subida correctamente. QR generado.');
-
     } catch (error: any) {
       alert(`❌ Error: ${error.message}`);
       console.error(error);
