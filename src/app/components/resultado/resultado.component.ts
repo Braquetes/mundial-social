@@ -73,7 +73,8 @@ export class ResultadoComponent implements OnInit {
     const folder = `${String(ahora.getDate()).padStart(2, '0')}${String(ahora.getMonth() + 1).padStart(2, '0')}${ahora.getFullYear()}`;
     const nombreArchivo = `${unixTime}.png`;
     const modulo = 'mundial_social';
-    const documento = this.esPanini() ? 'panini' : 'foto';
+    // const documento = this.esPanini() ? 'panini' : 'foto';
+    const documento = this.svc.estado().opcionValue;
 
     const blob = await new Promise<Blob>(resolve =>
       canvas.toBlob(b => resolve(b!), 'image/png')
