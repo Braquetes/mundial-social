@@ -14,7 +14,7 @@ import QRCode from 'qrcode';
 })
 export class ResultadoComponent implements OnInit {
   @ViewChild('cardRef') cardRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('fotoRef') fotoRef!: ElementRef<HTMLDivElement>;  // ← agrega esto
+  @ViewChild('fotoRef') fotoRef!: ElementRef<HTMLDivElement>;
 
   protected imagenUrl = signal<string>('');
   protected esPanini = signal<boolean>(false);
@@ -102,7 +102,7 @@ export class ResultadoComponent implements OnInit {
       : this.fotoRef?.nativeElement;
 
     if (!target) {
-      alert('No se encontró el elemento a imprimir');
+      alert('No se encontró el elemento a capturar');
       return;
     }
 
@@ -128,38 +128,67 @@ export class ResultadoComponent implements OnInit {
         };
       }
 
-      const canvas = await html2canvas(target, options);
-
-      // ← NUEVO: sube y genera QR (no bloquea la impresión)
       this.svc.cargando.set(true);
-      this.subirYGenerarQr(canvas).finally(() => this.svc.cargando.set(false));
 
+      const canvas = await html2canvas(target, options);
       const imgData = canvas.toDataURL('image/png');
-      const win = window.open('', '_blank');
-      if (!win) return;
 
-      const titulo = esPanini ? 'Tarjeta Panini' : 'Foto';
+      // Subir al servidor y generar QR
+      await this.subirYGenerarQr(canvas);
 
-      win.document.write(`
-      <html>
-        <head>
-          <title>Imprimir ${titulo}</title>
-          <style>
-            body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: white; }
-            img { max-width: 100%; max-height: 100vh; object-fit: contain; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-            @media print { body { margin: 0; padding: 0; } img { max-width: 100%; max-height: 100%; } }
-          </style>
-        </head>
-        <body>
-          <img src="${imgData}" onload="window.print();window.close();" onerror="alert('Error al cargar la imagen');" />
-        </body>
-      </html>
-    `);
-      win.document.close();
+      // Abrir la imagen en una nueva ventana (sin imprimir)
+      const ventana = window.open();
+      if (ventana) {
+        ventana.document.write(`
+          <html>
+            <head>
+              <title>${esPanini ? 'Tarjeta Panini' : 'Foto'} - Capturada</title>
+              <style>
+                body {
+                  margin: 0;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  min-height: 100vh;
+                  background: #f0f0f0;
+                }
+                img {
+                  max-width: 100%;
+                  max-height: 100vh;
+                  object-fit: contain;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                }
+                .info {
+                  position: fixed;
+                  bottom: 20px;
+                  left: 20px;
+                  background: rgba(0,0,0,0.7);
+                  color: white;
+                  padding: 8px 12px;
+                  border-radius: 8px;
+                  font-family: sans-serif;
+                  font-size: 12px;
+                }
+              </style>
+            </head>
+            <body>
+              <img src="${imgData}" />
+              <div class="info">
+                📸 Captura generada | Puedes guardar la imagen con clic derecho
+              </div>
+            </body>
+          </html>
+        `);
+        ventana.document.close();
+      }
+
+      alert('✅ Imagen capturada y subida correctamente. QR generado.');
 
     } catch (error: any) {
-      alert(`Error al generar la imagen: ${error.message}`);
+      alert(`❌ Error: ${error.message}`);
       console.error(error);
+    } finally {
+      this.svc.cargando.set(false);
     }
   }
 
